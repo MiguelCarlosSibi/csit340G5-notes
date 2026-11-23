@@ -1,10 +1,11 @@
 import NoteCard from './NoteCard.jsx'
-import { useState, useEffect, useRef } from 'react'
+import { useState, useEffect, useRef, useMemo } from 'react'
 
 const startingNotes = [
   { id: 1, title: 'Review map and filter', body: 'Redo the TodoMVC steps without looking at the guide.' },
   { id: 2, title: 'Prepare for the quiz', body: 'Practice writing one handler for many inputs.' },
 ]
+
 
 function Notes() {
   const [notes, setNotes] = useState(() => {
@@ -26,9 +27,11 @@ function Notes() {
     return () => clearTimeout(id)
   }, [form])
 
-  const visibleNotes = notes.filter((note) =>
-    note.title.toLowerCase().includes(search.toLowerCase())
-  )
+  const visibleNotes = useMemo(() => {
+    return notes.filter((note) =>
+      note.title.toLowerCase().includes(search.toLowerCase())
+    )
+  }, [notes, search])
 
   function handleChange(e) {
     setForm({ ...form, [e.target.name]: e.target.value })
