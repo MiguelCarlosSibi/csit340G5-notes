@@ -1,5 +1,5 @@
 import NoteCard from './NoteCard.jsx'
-import { useState, useEffect, useRef, useMemo } from 'react'
+import { useState, useEffect, useRef, useMemo, useCallback } from 'react'
 
 const startingNotes = [
   { id: 1, title: 'Review map and filter', body: 'Redo the TodoMVC steps without looking at the guide.' },
@@ -48,9 +48,9 @@ function Notes() {
     titleRef.current.focus()
   }
 
-  function handleDelete(id) {
+    const handleDelete = useCallback((id) => {
     setNotes(notes.filter((note) => note.id !== id))
-  }
+  }, [notes])
 
   return (
     <div className="grid min-h-screen grid-cols-[420px_1fr]">
@@ -97,18 +97,16 @@ function Notes() {
 
         <ul className="grid grid-cols-3 items-start gap-5">
           {visibleNotes.map((note) => (
-            <li
+                        <li
               key={note.id}
               className="relative min-h-32 bg-white px-6 py-5 shadow-[0_2px_4px_0_rgba(0,0,0,0.2),0_25px_50px_0_rgba(0,0,0,0.1)]"
             >
-              <NoteCard title={note.title} body={note.body} />
-              <button
-                type="button"
-                onClick={() => handleDelete(note.id)}
-                className="absolute top-4 right-5 cursor-pointer text-[26px] leading-none text-[#949494] hover:text-[#c18585]"
-              >
-                ×
-              </button>
+              <NoteCard
+                id={note.id}
+                title={note.title}
+                body={note.body}
+                onDelete={handleDelete}
+              />
             </li>
           ))}
         </ul>
